@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	f.Println("Hello World!")
+	f.Print("Stories are Stories\n");
+	f.Println("Gym")
 }
 
 func sayHello(name string) (string, error) {
