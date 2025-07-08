@@ -47,5 +47,5 @@ jobs:
             podman rm main-app || true
             podman rmi $IMAGE_NAME:latest || true
             podman pull $IMAGE_NAME:latest
-            podman run -d --name main-app -p 80:80 $IMAGE_NAME:latest
+            podman run -d --name main-app $IMAGE_NAME:latest
           "
