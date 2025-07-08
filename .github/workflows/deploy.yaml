@@ -1,4 +1,4 @@
-name: Podman Build and Deploy
+name: Podman Build and Deploy to Exoscale
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core # 👈 Recommended explicit image name
+  IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install Podman
@@ -26,35 +26,26 @@ jobs:
           echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io \
             -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-      - name: Build and push image
+      - name: Build and Push
         run: |
           podman build -t $IMAGE_NAME:latest .
           podman push $IMAGE_NAME:latest
 
-      - name: Set up SSH agent
+      - name: Set up SSH Agent
         uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Deploy on remote VM with Podman
+      - name: Deploy to Exoscale VM
         env:
-          IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core # 👈 Pass IMAGE_NAME to SSH block
+          IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
             set -e
-            echo 'Logging in to GHCR with Podman...'
             echo '${{ secrets.GHCR_TOKEN }}' | podman login ghcr.io -u '${{ secrets.GHCR_USERNAME }}' --password-stdin
-
-            echo 'Stopping and removing old container...'
             podman stop main-app || true
             podman rm main-app || true
-
-            echo 'Removing old image...'
             podman rmi $IMAGE_NAME:latest || true
-
-            echo 'Pulling new image...'
             podman pull $IMAGE_NAME:latest
-
-            echo 'Starting container...'
             podman run -d --name main-app -p 80:80 $IMAGE_NAME:latest
           "
