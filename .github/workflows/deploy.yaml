@@ -23,7 +23,7 @@ jobs:
 
       - name: Log in to GHCR
         run: |
-          echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+          echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u "${{ secrets.GITHUB_USERNAME }}" --password-stdin
 
       - name: Build and push image
         run: |
@@ -31,7 +31,7 @@ jobs:
           podman push $IMAGE_NAME:latest
 
       - name: Set up SSH agent
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
@@ -43,8 +43,8 @@ jobs:
             echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
             echo "Stopping and removing old container..."
-            podman stop myapp || true
-            podman rm myapp || true
+            podman stop main-app || true
+            podman rm main-app || true
 
             echo "Removing old image..."
             podman rmi $IMAGE_NAME:latest || true
@@ -53,5 +53,5 @@ jobs:
             podman pull $IMAGE_NAME:latest
 
             echo "Starting container..."
-            podman run -d --name myapp -p 80:80 $IMAGE_NAME:latest
+            podman run -d --name main-app -p 80:80 $IMAGE_NAME:latest
           EOF
