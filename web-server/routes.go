@@ -5,6 +5,12 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
+
+	// Main route:
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Welcome to the Web Server!")
+	})
+
 	v1 := app.Group("/v1")
 
 	v1.Get("/", func(c *fiber.Ctx) error {
