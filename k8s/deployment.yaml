@@ -17,7 +17,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: go-learn
-          image: ghcr.io/abrahimzaman360/go-learn:latest
+          image: __IMAGE_TAG__
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
