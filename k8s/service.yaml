@@ -1,0 +1,14 @@
+# deploy/go-core-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-core-service
+  namespace: default
+spec:
+  selector:
+    app: go-core
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP # or LoadBalancer if you want external access
