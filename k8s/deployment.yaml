@@ -13,10 +13,10 @@ spec:
       labels:
         app: go-learn
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: go-learn
           image: ghcr.io/abrahimzaman360/go-learn:latest
           ports:
             - containerPort: 3000
-      imagePullSecrets:
-        - name: ghcr-secret
