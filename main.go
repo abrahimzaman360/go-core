@@ -1,9 +1,8 @@
 package main
 
-import (
-	"fmt"
-)
+import webserver "go-learn/web-server"
 
+// Simple Linear Regression
 func main() {
-	fmt.Println("Starting server...")
+	webserver.Server() // Start the web server
 }
