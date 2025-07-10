@@ -1,51 +1,51 @@
-# name: Podman Build and Deploy to Exoscale
+name: Podman Build and Deploy to Exoscale
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
 
-# env:
-#   IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
+env:
+  IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#       - name: Install Podman
-#         run: |
-#           sudo apt update
-#           sudo apt install -y podman
+      - name: Install Podman
+        run: |
+          sudo apt update
+          sudo apt install -y podman
 
-#       - name: Log in to GHCR
-#         run: |
-#           echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io \
-#             -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io \
+            -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
-#       - name: Build and Push
-#         run: |
-#           podman build -t $IMAGE_NAME:latest .
-#           podman push $IMAGE_NAME:latest
+      - name: Build and Push
+        run: |
+          podman build -t $IMAGE_NAME:latest .
+          podman push $IMAGE_NAME:latest
 
-#       - name: Set up SSH Agent
-#         uses: webfactory/ssh-agent@v0.9.1
-#         with:
-#           ssh-private-key: ${{ secrets.SSH_KEY }}
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
 
-#       - name: Deploy to Exoscale VM
-#         env:
-#           IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
-#         run: |
-#           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
-#             set -e
-#             echo '${{ secrets.GHCR_TOKEN }}' | podman login ghcr.io -u '${{ secrets.GHCR_USERNAME }}' --password-stdin
-#             podman stop main-app || true
-#             podman rm main-app || true
-#             podman rmi $IMAGE_NAME:latest || true
-#             podman pull $IMAGE_NAME:latest
-#             podman run -d --name main-app $IMAGE_NAME:latest
-#           "
+      - name: Deploy to Exoscale VM
+        env:
+          IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/go-core
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+            set -e
+            echo '${{ secrets.GHCR_TOKEN }}' | podman login ghcr.io -u '${{ secrets.GHCR_USERNAME }}' --password-stdin
+            podman stop main-app || true
+            podman rm main-app || true
+            podman rmi $IMAGE_NAME:latest || true
+            podman pull $IMAGE_NAME:latest
+            podman run -d --name main-app $IMAGE_NAME:latest
+          "
