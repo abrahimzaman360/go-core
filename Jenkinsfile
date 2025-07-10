@@ -7,12 +7,6 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        git credentialsId: '154a5619-ecf6-49fc-91cc-9bac632775bf', url: 'https://github.com/abrahimzaman360/go-core.git'
-      }
-    }
-
     stage('Build Docker Image') {
       steps {
         sh "docker build -t $GHCR_IMAGE ."
