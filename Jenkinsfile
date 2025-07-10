@@ -32,6 +32,18 @@ pipeline {
                 }
             }
         }
+        stage('Delete Old Deployment') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'ghcr-io', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                    kubectl delete deployment go-core --ignore-not-found=true
+                    kubectl delete service go-core-service --ignore-not-found=true
+                    kubectl delete ingress go-core-ingress --ignore-not-found=true || true
+                    kubectl delete secret ghcr-secret --ignore-not-found=true
+                    '''
+                }
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'ghcr-io', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
@@ -43,7 +55,7 @@ pipeline {
                         --docker-email=jenkins@exoscale-vm.local \
                         --dry-run=client -o yaml | kubectl apply -f -
                     for file in k8s/*.yaml; do
-                        sed "s|BUILD_NUMBER|$DOCKER_TAG|g" $file | kubectl apply -f -
+                        sed "s|BUILD_NUMBER|$DOCKER_TAG|g" "$file" | kubectl apply -f - || { echo "Failed to apply $file"; exit 1; }
                     done
                     '''
                 }
@@ -52,7 +64,7 @@ pipeline {
         stage('Test Environment') {
             steps {
                 sh 'git --version'
-                sh 'java -version'
+                sh 'java --version'
                 sh 'docker --version'
                 sh 'kubectl version --client'
             }
