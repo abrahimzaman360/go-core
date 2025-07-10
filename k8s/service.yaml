@@ -11,4 +11,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3000
-  type: ClusterIP # or LoadBalancer if external access is needed
+  type: LoadBalancer # or LoadBalancer if external access is needed
