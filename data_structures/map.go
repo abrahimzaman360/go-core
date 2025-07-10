@@ -1,5 +1,6 @@
 package data_structures
 
+// this is a map also known ad dict
 func Map_Dict() {
 	var my_map = make(map[string]int) // "key" -> string : value -> int
 
