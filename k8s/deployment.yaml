@@ -13,11 +13,11 @@ spec:
       labels:
         app: go-core
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: go-core
           image: ghcr.io/abrahimzaman360/go-core:BUILD_NUMBER
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-          imagePullSecrets:
-            - name: ghcr-secret
