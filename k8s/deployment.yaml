@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-learn
+  name: go-core
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: go-learn
+      app: go-core
   template:
     metadata:
       labels:
-        app: go-learn
+        app: go-core
     spec:
-      imagePullSecrets:
-        - name: ghcr-secret
       containers:
-        - name: go-learn
-          image: __IMAGE_TAG__
+        - name: go-core
+          image: ghcr.io/abrahimzaman360/go-core:BUILD_NUMBER
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          imagePullSecrets:
+            - name: ghcr-secret

@@ -1,14 +1,14 @@
-# deploy/go-learn-service.yaml
+# deploy/go-core-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-learn-service
+  name: go-core-service
   namespace: default
 spec:
   selector:
-    app: go-learn # ✅ Match Deployment label
+    app: go-core # ✅ Match Deployment label
   ports:
     - protocol: TCP
       port: 80
       targetPort: 3000
-  type: ClusterIP # or LoadBalancer if external access is needed
+  type: LoadBalancer # or LoadBalancer if external access is needed
