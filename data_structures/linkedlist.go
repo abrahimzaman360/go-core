@@ -46,8 +46,8 @@ func (l *LinkedList) Append(val map[string]any) {
 	l.size += 1
 }
 
-func (l *LinkedList) Print_All() ([]byte, error) {
-	var result []map[string]any
+func (l *LinkedList) Print_All() (any, error) {
+	var result []map[string]interface{}
 	curr := l.head
 	for curr != nil {
 		result = append(result, curr.data)
