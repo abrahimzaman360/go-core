@@ -1,9 +1,15 @@
 package webserver
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+)
 
 func Server() {
 	app := fiber.New()
+
+	// logger
+	app.Use(logger.New())
 
 	// Setup routes
 	SetupRoutes(app)
